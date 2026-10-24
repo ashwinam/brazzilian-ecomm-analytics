@@ -76,3 +76,37 @@ SELECT COUNT(*) order_payments_count
 FROM order_payments
 GROUP BY order_id, payment_sequential
 HAVING COUNT(*) > 1;
+
+-- Missing or blank values in important columns.
+
+-- orders table
+
+SELECT *
+FROM orders
+WHERE customer_id IS NULL;
+
+-- customers table
+SELECT *
+FROM customers
+WHERE 
+    customer_unique_id IS NULL OR 
+    customer_city IS NULL OR 
+    customer_state IS NULL;
+
+-- order items table
+SELECT *
+FROM order_items
+WHERE 
+    product_id IS NULL OR
+    seller_id IS NULL OR
+    price IS NULL OR
+    freight_value IS NULL;
+
+-- Order Payments Table
+SELECT *
+FROM order_payments
+WHERE 
+    payment_type IS NULL OR
+    payment_installments IS NULL OR
+    payment_value IS NULL;
+
