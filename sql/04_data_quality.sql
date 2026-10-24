@@ -4,7 +4,7 @@ This script is for the data quality checks, is the data relaible or not
 
 Following checks i am going to do:
 [x] Duplicate primary-key values.
-[] Missing or blank values in important columns.
+[x] Missing or blank values in important columns.
 [] Invalid or orphaned foreign-key references.
 [] Orders without matching order items, where unexpected.
 [] Order timestamps that appear inconsistent or occur in an unexpected sequence.
@@ -110,3 +110,14 @@ WHERE
     payment_installments IS NULL OR
     payment_value IS NULL;
 
+-- Invalid or orphaned foreign-key references.
+
+-- Check the null values using joins in orders and customers table
+
+SELECT  
+    o.order_id,
+    o.customer_id
+FROM orders o
+LEFT JOIN customers c
+USING(customer_id)
+WHERE c.customer_id IS NULL;
