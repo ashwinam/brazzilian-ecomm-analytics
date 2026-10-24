@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS order_payments (
     payment_sequential INTEGER,
     payment_type VARCHAR(50),
     payment_installments INTEGER,
-    payment_value INTEGER,
+    payment_value NUMERIC,
     PRIMARY KEY(order_id, payment_sequential)
 );
 
