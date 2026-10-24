@@ -5,11 +5,8 @@ This script is for the data quality checks, is the data relaible or not
 Following checks i am going to do:
 [x] Duplicate primary-key values.
 [x] Missing or blank values in important columns.
-[] Invalid or orphaned foreign-key references.
-[] Orders without matching order items, where unexpected.
-[] Order timestamps that appear inconsistent or occur in an unexpected sequence.
-[] Negative or implausible monetary values, investigated in context rather than automatically deleted.
-[] Unexpected order statuses.
+[x] Invalid or orphaned foreign-key references.
+[x] Orders without matching order items, where unexpected.
 [] Payment totals that differ from item and freight totals, treated as an investigation rather than automatically assumed to be an error.
 [x] CSV row counts compared with PostgreSQL row counts after loading.
 */
@@ -121,3 +118,19 @@ FROM orders o
 LEFT JOIN customers c
 USING(customer_id)
 WHERE c.customer_id IS NULL;
+
+-- Orders without matching order items, where unexpected.
+
+-- Checking unmatched records with orders and order items
+
+SELECT 
+    oi.order_id,
+    oi.order_item_id
+FROM order_items oi
+LEFT JOIN orders o
+ON oi.order_id = o.order_id
+WHERE o.order_id IS NULL;
+
+-- Payment totals that differ from item and freight totals, treated as an investigation rather than automatically assumed to be an error. (order_items -> price + freigh_value == order_payments -> payment_value)
+
+-- Need to think for query for multiple orders from orders
