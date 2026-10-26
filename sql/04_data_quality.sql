@@ -7,7 +7,7 @@ Following checks i am going to do:
 [x] Missing or blank values in important columns.
 [x] Invalid or orphaned foreign-key references.
 [x] Orders without matching order items, where unexpected.
-[] Payment totals that differ from item and freight totals, treated as an investigation rather than automatically assumed to be an error.
+[x] Payment totals that differ from item and freight totals, treated as an investigation rather than automatically assumed to be an error.
 [x] CSV row counts compared with PostgreSQL row counts after loading.
 */
 
@@ -133,4 +133,49 @@ WHERE o.order_id IS NULL;
 
 -- Payment totals that differ from item and freight totals, treated as an investigation rather than automatically assumed to be an error. (order_items -> price + freigh_value == order_payments -> payment_value)
 
--- Need to think for query for multiple orders from orders
+WITH order_item_summary AS (
+--  this will return the order items table sum and total of order value
+SELECT 
+    order_id,
+    SUM(price) total_price_orderwise,
+    SUM(freight_value) total_freight_orderwise,
+    (SUM(price) + SUM(freight_value)) total_amount_orderwise,
+    COUNT(*) total_count_orderwise
+FROM order_items
+GROUP BY order_id
+-- ORDER BY total_count_orderwise DESC
+),
+order_payment_summary AS (
+    -- This will give the total payment paid against the order
+    SELECT 
+        order_id,
+        SUM(payment_value) total_payment_paid_orderwise
+    FROM order_payments
+    GROUP BY order_id
+),
+-- total_order_payment_installments AS (
+-- Just for extra checks for discrepency
+--     SELECT 
+--         order_id,
+--         SUM(payment_installments) total_payment_installments_orderwise
+--     FROM order_payments
+--     GROUP BY order_id
+-- )
+
+-- Main Query
+SELECT 
+    oi.order_id order_items_orders,
+    op.order_id order_payments_orders,
+    oi.total_amount_orderwise,
+    op.total_payment_paid_orderwise,
+    -- opi.total_payment_installments_orderwise,
+    (oi.total_amount_orderwise - op.total_payment_paid_orderwise) difference
+FROM order_item_summary oi
+LEFT JOIN order_payment_summary op
+    ON oi.order_id = op.order_id
+-- LEFT JOIN total_order_payment_installments opi
+--     ON op.order_id = opi.order_id
+WHERE (oi.total_amount_orderwise - op.total_payment_paid_orderwise) != 0
+ORDER BY ABS((oi.total_amount_orderwise - op.total_payment_paid_orderwise)) DESC;
+
+-- FOUND 576 DISCREPENCIES
