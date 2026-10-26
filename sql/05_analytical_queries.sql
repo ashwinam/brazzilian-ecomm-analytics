@@ -3,7 +3,7 @@
 [x] What are the monthly order-volume and sales trends?
 [x] What is the average order value, using a clearly documented definition?
 [x] Which ten product categories generate the most item sales?
-[] Which products have the highest item sales?
+[x] Which products have the highest item sales?
 [] Which states generate the most orders and sales?
 [] How many customers have placed more than one distinct order?
 [] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
@@ -118,3 +118,20 @@ JOIN products p
 GROUP BY p.product_category_name
 ORDER BY category_wise_ordered DESC
 LIMIT 10;
+
+-- 5. Which products have the highest item sales?
+
+/*
+1. order items have the product id
+2. COUNT the order_id and group by product id so get the product wise sales
+3. MAX the product id so get the highest sale
+*/
+
+
+SELECT 
+    product_id,
+    SUM(price) total_sales_product_wise
+FROM order_items
+GROUP BY product_id
+ORDER BY total_sales_product_wise DESC
+LIMIT 1;
