@@ -1,7 +1,7 @@
 /* 12 Business questions 
 [x] What are the total numbers of orders, customers, products, and sellers?
 [x] What are the monthly order-volume and sales trends?
-[] What is the average order value, using a clearly documented definition?
+[x] What is the average order value, using a clearly documented definition?
 [] Which ten product categories generate the most item sales?
 [] Which products have the highest item sales?
 [] Which states generate the most orders and sales?
@@ -75,3 +75,24 @@ FROM sales_summary;
 
 -- NOTE: here missing thing is to month wise sequence is not complete, for sales trends needs to be every month if any month missing then add 0 or null but for complexity i avoided those addons
 
+-- 3. What is the average order value, using a clearly documented definition?
+-- average order value, get the total price based on orders and calcualte the average price of it using subquery
+
+/* Documentation
+Metric: Average Order Value(orderwise)
+
+Definition: calculate the items price, excluding the freight value
+
+Calculation: sum the price based on order items, like each order going to have multiple items so they have prices, so i added up those and then using subquery i calculate the Average.
+
+*/
+
+SELECT 
+    ROUND(AVG(order_price), 2)
+FROM (
+    SELECT 
+        order_id,
+        SUM(price) order_price
+    FROM order_items
+    GROUP BY order_id
+);
