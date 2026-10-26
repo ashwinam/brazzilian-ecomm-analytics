@@ -2,7 +2,7 @@
 [x] What are the total numbers of orders, customers, products, and sellers?
 [x] What are the monthly order-volume and sales trends?
 [x] What is the average order value, using a clearly documented definition?
-[] Which ten product categories generate the most item sales?
+[x] Which ten product categories generate the most item sales?
 [] Which products have the highest item sales?
 [] Which states generate the most orders and sales?
 [] How many customers have placed more than one distinct order?
@@ -96,3 +96,25 @@ FROM (
     FROM order_items
     GROUP BY order_id
 );
+
+
+-- 4. Which ten product categories generate the most item sales?
+
+/*
+1. Order has the order id (so get the order that placed by customers)
+2. Then we have order items that have the product id
+3. Product table has the categories, which category product/item belongs
+
+So here don’t need an order table
+Only need an order items table, join with product table, get the categories and then check which categories most ordered based on count
+*/
+
+SELECT
+    p.product_category_name,
+    COUNT(p.product_category_name) category_wise_ordered
+FROM order_items oi
+JOIN products p
+    ON oi.product_id = p.product_id
+GROUP BY p.product_category_name
+ORDER BY category_wise_ordered DESC
+LIMIT 10;
