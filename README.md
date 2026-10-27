@@ -54,6 +54,9 @@ A reconciliation query identified **576 orders with differences** between item-p
 
 ## Data Model
 The project uses the original Olist entity structure rather than redesigning the source model.
+
+![ER Diagram](er_diagram.png)
+
 - **Customers:** `customer_id` identifies the customer record associated with an order; `customer_unique_id` can link records belonging to the same underlying customer across orders.
 - **Orders:** One row per `order_id`, linked to `customers` through `customer_id`.
 - **Order items:** One row per item within an order. The composite primary key is `(order_id, order_item_id)`. Each row references an order, product, and seller.
