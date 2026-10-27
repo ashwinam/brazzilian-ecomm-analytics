@@ -8,7 +8,7 @@
 [x] How many customers have placed more than one distinct order?
 [x] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
 [x] What is the distribution of payment methods? // get the formula from gpt
-[] What percentage of delivered orders arrived later than estimated?
+[x] What percentage of delivered orders arrived later than estimated?
 [] Which sellers have the highest order volume or item sales?
 [] What data-quality issues exist in the source files?
 
@@ -249,3 +249,16 @@ FROM (
     GROUP BY payment_type
 )t;
 
+-- 10. What percentage of delivered orders arrived later than estimated?
+
+SELECT
+    (
+        CAST(COUNT(*) AS NUMERIC) / 
+        (
+        SELECT COUNT(*) FROM orders WHERE order_status = 'delivered'
+        )
+        ) * 100 
+FROM orders
+WHERE 
+    order_status = 'delivered'
+    AND order_delivered_customer_date > order_delivery_estimated_date;
