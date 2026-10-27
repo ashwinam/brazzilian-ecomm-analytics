@@ -1,4 +1,4 @@
-/* 12 Business questions 
+/* 11 Business questions 
 [x] What are the total numbers of orders, customers, products, and sellers?
 [x] What are the monthly order-volume and sales trends?
 [x] What is the average order value, using a clearly documented definition?
@@ -10,7 +10,6 @@
 [x] What is the distribution of payment methods? // get the formula from gpt
 [x] What percentage of delivered orders arrived later than estimated?
 [x] Which sellers have the highest order volume or item sales?
-[] What data-quality issues exist in the source files?
 
 */
 
