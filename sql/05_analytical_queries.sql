@@ -5,7 +5,7 @@
 [x] Which ten product categories generate the most item sales?
 [x] Which products have the highest item sales?
 [x] Which states generate the most orders and sales?
-[] How many customers have placed more than one distinct order?
+[x] How many customers have placed more than one distinct order?
 [] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
 [] What is the distribution of payment methods?
 [] What percentage of delivered orders arrived later than estimated?
@@ -163,3 +163,29 @@ JOIN order_items oi
     ON o.order_id = oi.order_id
 GROUP BY c.customer_state
 ORDER BY customer_state;
+
+-- 7. How many customers have placed more than one distinct order?
+
+/*
+1. orders table have the customer_ids and order_ids
+2. Distinct the count based on customer_id
+
+Now i get it,
+customer id belong to orders and customer unique id is the actual customers
+1. first collect the customer_unique_id and customer_id
+2. collect the order_id
+3. count the distinct order_id based on customer unique_id, if there is no distinct then each order belongs to customer id so no need to join it, but need an distinct thats why
+*/
+
+SELECT 
+    COUNT(customer_unique_id) customers_count
+FROM (
+    SELECT
+        customer_unique_id,
+        COUNT(DISTINCT o.order_id) orders_count
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    GROUP BY customer_unique_id
+    HAVING COUNT(DISTINCT o.order_id) > 1
+)t;
