@@ -6,7 +6,7 @@
 [x] Which products have the highest item sales?
 [x] Which states generate the most orders and sales?
 [x] How many customers have placed more than one distinct order?
-[] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
+[x] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
 [] What is the distribution of payment methods?
 [] What percentage of delivered orders arrived later than estimated?
 [] Which sellers have the highest order volume or item sales?
@@ -186,3 +186,51 @@ FROM (
     GROUP BY customer_unique_id
     HAVING COUNT(DISTINCT o.order_id) > 1
 )t;
+
+-- 8. What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
+
+/*
+Question is saying that if one customer ordered 4 times
+orders.          date
+order 1.        january 1
+order 2.        january 11
+order 3.        january 21
+order 4.        february 11
+
+order 2 - order 1 = 10 days
+order 3 - order 2 = 10 days
+order 4 - order 3 = 20 days
+
+10 + 10 + 20 / 3 = 13.33 is the average
+
+APPROACH
+
+1. collect the customer unique id
+2. from orders order id and order purchase time
+3. get the difference of timestamps in table
+4. calculate the average
+*/
+
+SELECT 
+    customer_unique_id,
+    AVG(interval_days) average_interval
+FROM (
+    SELECT
+        customer_unique_id,
+        current_timestamp,
+        previous_timestamp,
+        ROUND(EXTRACT(EPOCH FROM(current_timestamp - previous_timestamp)) / 86400) interval_days
+    FROM (
+        SELECT 
+            c.customer_unique_id customer_unique_id,
+            o.order_purchase_timestamp current_timestamp,
+            LAG(o.order_purchase_timestamp) OVER(PARTITION BY c.customer_unique_id ORDER BY o.order_purchase_timestamp) previous_timestamp
+        FROM customers c
+        JOIN orders o
+            ON c.customer_id = o.customer_id
+    )
+)t
+GROUP BY customer_unique_id
+HAVING AVG(interval_days) IS NOT NULL;
+
+
