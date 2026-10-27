@@ -167,9 +167,6 @@ ORDER BY customer_state;
 -- 7. How many customers have placed more than one distinct order?
 
 /*
-1. orders table have the customer_ids and order_ids
-2. Distinct the count based on customer_id
-
 Now i get it,
 customer id belong to orders and customer unique id is the actual customers
 1. first collect the customer_unique_id and customer_id
