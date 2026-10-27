@@ -4,7 +4,7 @@
 [x] What is the average order value, using a clearly documented definition?
 [x] Which ten product categories generate the most item sales?
 [x] Which products have the highest item sales?
-[] Which states generate the most orders and sales?
+[x] Which states generate the most orders and sales?
 [] How many customers have placed more than one distinct order?
 [] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
 [] What is the distribution of payment methods?
@@ -135,3 +135,31 @@ FROM order_items
 GROUP BY product_id
 ORDER BY total_sales_product_wise DESC
 LIMIT 1;
+
+-- 6. Which states generate the most orders and sales?
+
+/*
+APPROACH
+
+customer state belongs to customers table,
+orders and sales belongs to order items,
+but customer is relAted with the orders table
+
+Join Three tables reversely
+1. first bring the states and customer_ids
+2. get the order ids from from orders table
+3. get the prices from order items table using order_id
+4. aggregate those using customer_states
+*/
+
+SELECT
+    c.customer_state states,
+    COUNT(o.order_id) total_orders,
+    CONCAT('$ ', ROUND(SUM(oi.price), 2)) total_sales
+FROM customers c
+JOIN orders o
+    ON c.customer_id = o.customer_id
+JOIN order_items oi
+    ON o.order_id = oi.order_id
+GROUP BY c.customer_state
+ORDER BY customer_state;
