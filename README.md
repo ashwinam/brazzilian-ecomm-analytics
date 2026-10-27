@@ -5,16 +5,14 @@
 > performance using the Olist public dataset.
 
 ## Overview
-  
 This project analyzes the Olist Brazilian E-Commerce dataset to answer practical business questions using PostgreSQL. It transforms related CSV files into a relational data model, applies data-quality checks, and uses SQL aggregations, window functions, subqueries, temporary tables and much more to investigate sales, customer purchasing behavior, product categories, seller performance, payment methods, and delivery timeliness. The final output is a set of reusable SQL analyses and documented data-quality findings.
 
 ## Objectives
-
 - [x] Load and model the core Olist CSV datasets in a relational database.
 - [x] Write SQL queries to analyze sales, orders, products, customers, sellers, payments, and delivery performance.
 - [x] Create data-quality checks and investigate findings against the source data.
-## Architecture
 
+## Architecture
 ![Project Architecture](docs/images/architecture.png)
 
 
@@ -33,7 +31,6 @@ Technology Purpose
 PostgreSQL Relational storage and SQL execution, SQL Data aggregation, transformation, validation, and analysis CSV Source data format Git Version control and project collaboration project work described here is centered on PostgreSQL and SQL.
 
 ## Dataset
-
 - **Source:** [Olist Brazilian E-Commerce Public Dataset on Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 - **Format:** CSV
 - **Description:** An anonymized Brazilian e-commerce dataset containing orders, customers, order items, products, sellers, payments, and related information. The project focuses on the core tables used for sales and operational analysis.
@@ -56,7 +53,6 @@ The project includes data-quality checks intended to assess:
 A reconciliation query identified **576 orders with differences** between item-plus-freight totals and recorded payment totals. Selected records were manually checked against the source CSVs, and the SQL calculations matched the source data. The causes of the differences have not yet been established, so they are treated as investigation findings rather than automatically classified as errors.
 
 ## Data Model
-
 The project uses the original Olist entity structure rather than redesigning the source model.
 - **Customers:** `customer_id` identifies the customer record associated with an order; `customer_unique_id` can link records belonging to the same underlying customer across orders.
 - **Orders:** One row per `order_id`, linked to `customers` through `customer_id`.
@@ -75,10 +71,7 @@ The project uses the original Olist entity structure rather than redesigning the
 - Business metrics must document their definitions---for example, merchandise average order value uses item `price` and excludes freight, while an alternative definition may include freight.
 
 ## Getting Started
-
-  
-
-### Pr'erequisites
+### Prerequisites
 - PostgreSQL (a recent supported version)
 - A PostgreSQL client, such as `psql` or pgAdmin
 - Git
@@ -88,13 +81,11 @@ The project uses the original Olist entity structure rather than redesigning the
 Clone your repository:
 
 ``` bash
-
-git clone [Project Link:](https://github.com/ashwinam/brazzilian-ecomm-analytics.git)
+git clone https://github.com/ashwinam/brazzilian-ecomm-analytics.git
 
 cd brazzilian-ecomm-analytics
-
 ```
-  
+
 Create a database in PostgreSQL (for example, `olist_analytics`) and
 create the project schema (for example, `olist`) if your SQL scripts
 expect one.
@@ -102,12 +93,11 @@ expect one.
 Load the required CSV files into the corresponding tables. The exact
 import steps depend on your local PostgreSQL setup and the paths to the
 downloaded files.
-### Configuration
 
+### Configuration
 If you use local connection settings or scripts that require credentials, keep them in local environment configuration and do not commit secrets. Add an example configuration file if the project uses one.
 
 ### Run the Project
-
 Run the SQL scripts in the order required by your repository. A typical sequence is:
 
 1. Create the schema and tables.
@@ -128,6 +118,7 @@ The project explores questions such as:
 - What percentage of delivered orders arrived later than estimated?
 - Which sellers have the highest distinct-order volume and item sales?
 - What data-quality issues or reconciliation differences require investigation?
+
 ## Challenges and Design Decisions
 - **Different table grains:** Order items and payment records can have multiple rows per order. Aggregating each to order level before reconciliation avoids multiplying rows in joins.
 - **Customer identity:** `customer_unique_id` is used for repeat-customer analysis because `customer_id` represents the customer record associated with an order.
@@ -137,7 +128,6 @@ The project explores questions such as:
 - **Order counts:** Distinct `order_id` values are used when counting orders from the order-item table.
 
 ## References
-
 - [Olist Brazilian E-Commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [PostgreSQL Window Functions](https://www.postgresql.org/docs/current/functions-window.html)
