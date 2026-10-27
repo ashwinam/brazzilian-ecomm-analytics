@@ -35,7 +35,7 @@ FROM sellers;
 
 -- Collect the monthwise order-volume using purchase date column
 
--- Create Temporary table for same session usage, dont want the headache to drop the table afterwards
+-- Create Temporary table for same session usage
 CREATE TEMPORARY TABLE monthwise_orders_and_total_sales AS
     SELECT 
         TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') period,
@@ -75,7 +75,7 @@ FROM sales_summary;
 -- NOTE: here missing thing is to month wise sequence is not complete, for sales trends needs to be every month if any month missing then add 0 or null but for complexity i avoided those addons
 
 -- 3. What is the average order value, using a clearly documented definition?
--- average order value, get the total price based on orders and calcualte the average price of it using subquery
+-- average order value, get the total price based on orders and calculate the average price of it using subquery
 
 /* Documentation
 Metric: Average Order Value(orderwise)
@@ -166,7 +166,6 @@ ORDER BY customer_state;
 -- 7. How many customers have placed more than one distinct order?
 
 /*
-Now i get it,
 customer id belong to orders and customer unique id is the actual customers
 1. first collect the customer_unique_id and customer_id
 2. collect the order_id
