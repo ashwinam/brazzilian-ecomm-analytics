@@ -7,7 +7,7 @@
 [x] Which states generate the most orders and sales?
 [x] How many customers have placed more than one distinct order?
 [x] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
-[] What is the distribution of payment methods?
+[x] What is the distribution of payment methods? // get the formula from gpt
 [] What percentage of delivered orders arrived later than estimated?
 [] Which sellers have the highest order volume or item sales?
 [] What data-quality issues exist in the source files?
@@ -233,4 +233,19 @@ FROM (
 GROUP BY customer_unique_id
 HAVING AVG(interval_days) IS NOT NULL;
 
+
+-- 9. What is the distribution of payment methods?
+
+
+SELECT 
+    payment_type,
+    type_count,
+    CAST(type_count AS NUMERIC) / (SELECT COUNT(*) FROM order_payments) * 100 dist_percentage
+FROM (
+    SELECT
+        payment_type,
+        COUNT(payment_type) type_count
+    FROM order_payments
+    GROUP BY payment_type
+)t;
 
