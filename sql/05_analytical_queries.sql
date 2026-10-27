@@ -9,7 +9,7 @@
 [x] What is the average time between purchases for repeat customers, where timestamps allow it to be calculated?
 [x] What is the distribution of payment methods? // get the formula from gpt
 [x] What percentage of delivered orders arrived later than estimated?
-[] Which sellers have the highest order volume or item sales?
+[x] Which sellers have the highest order volume or item sales?
 [] What data-quality issues exist in the source files?
 
 */
@@ -262,3 +262,15 @@ FROM orders
 WHERE 
     order_status = 'delivered'
     AND order_delivered_customer_date > order_delivery_estimated_date;
+
+-- 11. Which sellers have the highest order volume or item sales?
+
+SELECT 
+    seller_id,
+    COUNT(DISTINCT order_id) total_orders_sellerwise,
+    SUM(price) total_item_sales_sellerwise
+FROM order_items
+GROUP BY seller_id
+ORDER BY total_orders_sellerwise DESC;
+
+-- So the answer is the 6560211a-19b4-7992-c366-6cc44a7e94c0 this seller based on highest order volume
